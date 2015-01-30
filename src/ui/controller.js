@@ -17,6 +17,12 @@ app.controller('Ctrl', ['$scope', '$timeout', 'cpu', 'memory', 'assembler', func
         $scope.selectedLine = -1;
     };
 
+    $scope.selectCodeLine = function (ip) {
+        if (ip in $scope.mapping) {
+            $scope.selectedLine = $scope.mapping[ip];
+        }
+    };
+
     $scope.executeStep = function() {
         if (!$scope.checkPrgrmLoaded()) {
             $scope.assemble();
@@ -26,10 +32,7 @@ app.controller('Ctrl', ['$scope', '$timeout', 'cpu', 'memory', 'assembler', func
             // Execute
             var res = cpu.step();
 
-            // Mark in code
-            if (cpu.ip in $scope.mapping) {
-                $scope.selectedLine = $scope.mapping[cpu.ip];
-            }
+            $scope.selectCodeLine(cpu.ip);
 
             return res;
         } catch (e) {
